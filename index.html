@@ -35,9 +35,9 @@
           <i data-lucide="search" class="w-4 h-4 text-amber-700/50 absolute left-3.5 top-3"></i>
         </div>
 
-        <!-- Khhu vực Tài khoản / Đăng nhập -->
+        <!-- Khu vực Tài khoản / Đăng nhập / Đăng ký -->
         <div id="userNavAuth" class="flex items-center gap-3">
-          <!-- Render động qua JS (Hiện nút Đăng nhập HOẶC Thông tin User + Nút Đăng bài) -->
+          <!-- Render động qua JS -->
         </div>
       </div>
 
@@ -144,41 +144,58 @@
 
 
   <!-- ================================================================= -->
-  <!-- 2. POPUP ĐĂNG NHẬP / ĐĂNG KÝ (MODAL LOGIN)                         -->
+  <!-- 2. POPUP ĐĂNG NHẬP & ĐĂNG KÝ (MODAL AUTHENTICATION)               -->
   <!-- ================================================================= -->
-  <div id="loginModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-amber-950/80 backdrop-blur-sm px-4">
+  <div id="authModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-amber-950/80 backdrop-blur-sm px-4">
     <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md relative border border-amber-200">
-      <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
 
-      <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center p-3 bg-amber-100 text-amber-600 rounded-full mb-3">
-          <i data-lucide="user" class="w-8 h-8"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-gray-900">Đăng Nhập Tài Khoản</h2>
-        <p class="text-sm text-gray-500 mt-1">Đăng nhập để viết bài & đóng góp tin tức</p>
+      <!-- Tab Chuyển Đổi Đăng Nhập / Đăng Ký -->
+      <div class="flex border-b border-gray-200 mb-6">
+        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-2 text-center font-bold text-amber-600 border-b-2 border-amber-500">Đăng Nhập</button>
+        <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="flex-1 py-2 text-center font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600">Đăng Ký Tài Khoản</button>
       </div>
 
+      <!-- FORM 1: ĐĂNG NHẬP -->
       <form id="loginForm" class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Tài khoản</label>
-          <input type="text" id="username" value="user" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
+          <input type="text" id="loginUsername" required placeholder="Nhập tên tài khoản..." class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Mật khẩu</label>
-          <input type="password" id="password" value="123456" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
+          <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
         </div>
-        <div id="loginError" class="text-red-500 text-sm hidden">Tài khoản hoặc mật khẩu không đúng!</div>
+        <div id="loginError" class="text-red-500 text-sm hidden">Tài khoản hoặc mật khẩu không chính xác!</div>
         <button type="submit" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold rounded-lg transition shadow-md">
           Đăng Nhập
         </button>
+        <div class="pt-2 text-xs text-gray-400 text-center">Mặc định Admin: <b>admin</b> / <b>123456</b></div>
       </form>
 
-      <div class="mt-6 pt-4 border-t text-xs text-gray-500 space-y-1">
-        <p>• Tài khoản Độc giả: <b>user</b> / <b>123456</b></p>
-        <p>• Tài khoản Admin: <b>admin</b> / <b>123456</b></p>
-      </div>
+      <!-- FORM 2: ĐĂNG KÝ -->
+      <form id="registerForm" class="space-y-4 hidden">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Họ và Tên / Bút danh *</label>
+          <input type="text" id="regFullName" required placeholder="VD: Nguyễn Văn A" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tên tài khoản (Đăng nhập) *</label>
+          <input type="text" id="regUsername" required placeholder="VD: nguyenvana" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Mật khẩu *</label>
+          <input type="password" id="regPassword" required placeholder="••••••••" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
+        </div>
+        <div id="regError" class="text-red-500 text-sm hidden">Tên tài khoản này đã tồn tại!</div>
+        <div id="regSuccess" class="text-emerald-600 text-sm hidden">Đăng ký thành công! Hãy đăng nhập ngay.</div>
+        <button type="submit" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold rounded-lg transition shadow-md">
+          Tạo Tài Khoản Mới
+        </button>
+      </form>
+
     </div>
   </div>
 
@@ -222,7 +239,7 @@
         <div class="flex justify-between items-center mb-6">
           <div>
             <h1 class="text-2xl font-bold text-gray-900">Xét Duyệt & Quản Lý Bài Viết</h1>
-            <p class="text-sm text-gray-500">Duyệt các bài viết do Độc giả gửi lên hoặc quản lý tin tức hiện có</p>
+            <p class="text-sm text-gray-500">Duyệt bài viết do Độc giả gửi lên hoặc quản lý tin tức hiện có</p>
           </div>
           <button onclick="switchAdminTab('create')" class="bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition shadow">
             <i data-lucide="plus" class="w-4 h-4"></i> Đăng Bài Trực Tiếp
@@ -247,7 +264,7 @@
         </div>
       </section>
 
-      <!-- Tab 2: Admin Viết Bài Trực Tiếp (Tự động Duyệt) -->
+      <!-- Tab 2: Admin Viết Bài Trực Tiếp -->
       <section id="createTab" class="hidden max-w-3xl mx-auto">
         <div class="flex items-center justify-between mb-6">
           <h1 class="text-2xl font-bold text-gray-900">Đăng Bài Viết Trực Tiếp</h1>
@@ -296,22 +313,26 @@
   <!-- 4. JAVASCRIPT XỬ LÝ TOÀN BỘ LOGIC                                 -->
   <!-- ================================================================= -->
   <script>
-    // 1. Kho Dữ Liệu Ban Đầu (Bổ sung thuộc tính author & status)
-    // status: 'approved' (Đã duyệt/Lên trang chủ) | 'pending' (Chờ duyệt)
-    let posts = JSON.parse(localStorage.getItem('my_news_posts_v2')) || [
+    // 1. Kho Dữ Liệu Bài Viết
+    let posts = JSON.parse(localStorage.getItem('my_news_posts_v3')) || [
       { id: 1, title: 'Trí Tuệ Nhân Tạo AI Đang Thay Đổi Thế Giới Như Thế Nào?', category: 'Công nghệ', date: '2026-10-10', author: 'Biên Tập Viên', status: 'approved', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800', content: 'Công nghệ AI đang phát triển với tốc độ chóng mặt và thâm nhập sâu rộng vào hầu hết các lĩnh vực đời sống...' },
       { id: 2, title: 'Xu Hướng Du Lịch Trải Nghiệm Mới Của Giới Trẻ Năm 2026', category: 'Xã hội', date: '2026-10-09', author: 'Biên Tập Viên', status: 'approved', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800', content: 'Du lịch xanh và khám phá thiên nhiên hoang sơ đang trở thành xu hướng hàng đầu đối với giới trẻ năm 2026...' },
       { id: 3, title: 'Đề xuất giải pháp xanh cho đô thị thông minh năm 2026', category: 'Xã hội', date: '2026-10-12', author: 'MinhThanh_User', status: 'pending', image: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800', content: 'Bài viết đóng góp từ độc giả về các giải pháp phủ xanh không gian sống đô thị...' }
     ];
 
-    // Trạng thái tài khoản người dùng đăng nhập hiện tại
-    let currentUser = JSON.parse(localStorage.getItem('my_news_current_user')) || null; // null | { username, role: 'user'|'admin' }
+    // 2. Danh Sách Tài Khoản Đã Đăng Ký (Khởi tạo tài khoản demo)
+    let registeredUsers = JSON.parse(localStorage.getItem('my_news_users')) || [
+      { fullname: 'Độc Giả Mẫu', username: 'user', password: '123' }
+    ];
+
+    // Trạng thái phiên đăng nhập
+    let currentUser = JSON.parse(localStorage.getItem('my_news_current_user')) || null;
 
     lucide.createIcons();
     updateAuthUI();
     renderUserNews(posts);
 
-    // ================= XỬ LÝ ĐĂNG NHẬP / ĐĂNG XUẤT =================
+    // ================= QUẢN LÝ ĐĂNG NHẬP / ĐĂNG KÝ =================
 
     function updateAuthUI() {
       const container = document.getElementById('userNavAuth');
@@ -330,41 +351,98 @@
             <button onclick="showUserSubmitForm()" class="px-3.5 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-amber-950 rounded-lg flex items-center gap-1.5 shadow-sm transition">
               <i data-lucide="square-pen" class="w-4 h-4"></i> Gửi Bài Viết
             </button>
-            <span class="text-xs font-semibold text-amber-900 bg-amber-100 px-3 py-1.5 rounded-full">👤 ${currentUser.username}</span>
+            <span class="text-xs font-semibold text-amber-900 bg-amber-100 px-3 py-1.5 rounded-full">👤 ${currentUser.fullname}</span>
             <button onclick="logout()" class="p-2 text-gray-500 hover:text-red-600 transition" title="Đăng xuất"><i data-lucide="log-out" class="w-4 h-4"></i></button>
           `;
         }
       } else {
         container.innerHTML = `
-          <button onclick="openLoginModal()" class="px-4 py-2 text-xs font-bold bg-amber-950 hover:bg-amber-900 text-amber-100 rounded-lg transition flex items-center gap-1.5 shadow-sm">
-            <i data-lucide="log-in" class="w-4 h-4 text-amber-400"></i> Đăng Nhập
+          <button onclick="openAuthModal()" class="px-4 py-2 text-xs font-bold bg-amber-950 hover:bg-amber-900 text-amber-100 rounded-lg transition flex items-center gap-1.5 shadow-sm">
+            <i data-lucide="log-in" class="w-4 h-4 text-amber-400"></i> Đăng Nhập / Đăng Ký
           </button>
         `;
       }
       lucide.createIcons();
     }
 
+    // Chuyển Tab Đăng Nhập / Đăng Ký
+    function switchAuthTab(tab) {
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const tabLoginBtn = document.getElementById('tabLoginBtn');
+      const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+
+      document.getElementById('loginError').classList.add('hidden');
+      document.getElementById('regError').classList.add('hidden');
+      document.getElementById('regSuccess').classList.add('hidden');
+
+      if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+        tabLoginBtn.className = "flex-1 py-2 text-center font-bold text-amber-600 border-b-2 border-amber-500";
+        tabRegisterBtn.className = "flex-1 py-2 text-center font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600";
+      } else {
+        loginForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+        tabRegisterBtn.className = "flex-1 py-2 text-center font-bold text-amber-600 border-b-2 border-amber-500";
+        tabLoginBtn.className = "flex-1 py-2 text-center font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600";
+      }
+    }
+
+    // Xử lý XÁC NHẬN ĐĂNG NHẬP
     document.getElementById('loginForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      const u = document.getElementById('username').value.trim();
-      const p = document.getElementById('password').value.trim();
+      const u = document.getElementById('loginUsername').value.trim();
+      const p = document.getElementById('loginPassword').value.trim();
 
+      // Kiếm tra Admin
       if (u === 'admin' && p === '123456') {
-        currentUser = { username: 'Admin', role: 'admin' };
-      } else if (u && p === '123456') {
-        currentUser = { username: u, role: 'user' };
+        currentUser = { fullname: 'Admin Biên Tập', username: 'admin', role: 'admin' };
       } else {
-        document.getElementById('loginError').classList.remove('hidden');
-        return;
+        // Kiểm tra User trong danh sách Đăng ký
+        const userFound = registeredUsers.find(account => account.username === u && account.password === p);
+        if (userFound) {
+          currentUser = { fullname: userFound.fullname, username: userFound.username, role: 'user' };
+        } else {
+          document.getElementById('loginError').classList.remove('hidden');
+          return;
+        }
       }
 
       localStorage.setItem('my_news_current_user', JSON.stringify(currentUser));
-      closeLoginModal();
+      closeAuthModal();
       updateAuthUI();
 
       if (currentUser.role === 'admin') {
         switchToAdminView();
       }
+    });
+
+    // Xử lý ĐĂNG KÝ TÀI KHOẢN MỚI
+    document.getElementById('registerForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fullname = document.getElementById('regFullName').value.trim();
+      const username = document.getElementById('regUsername').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+
+      // Kiểm tra tên tài khoản trùng lặp
+      if (username === 'admin' || registeredUsers.some(u => u.username === username)) {
+        document.getElementById('regError').classList.remove('hidden');
+        document.getElementById('regSuccess').classList.add('hidden');
+        return;
+      }
+
+      // Lưu tài khoản mới
+      const newUser = { fullname, username, password };
+      registeredUsers.push(newUser);
+      localStorage.setItem('my_news_users', JSON.stringify(registeredUsers));
+
+      document.getElementById('regError').classList.add('hidden');
+      document.getElementById('regSuccess').classList.remove('hidden');
+      document.getElementById('registerForm').reset();
+
+      // Tự động chuyển về tab đăng nhập sau 1.5s
+      setTimeout(() => switchAuthTab('login'), 1200);
     });
 
     function logout() {
@@ -374,15 +452,12 @@
       switchToUserView();
     }
 
-    function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
-    function closeLoginModal() { 
-      document.getElementById('loginModal').classList.add('hidden'); 
-      document.getElementById('loginError').classList.add('hidden');
-    }
+    function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
+    function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
+
 
     // ================= CHỨC NĂNG DÀNH CHO ĐỘC GIẢ (USER) =================
 
-    // Chỉ render các bài viết đã ĐƯỢC DUYỆT (status === 'approved') ra trang chủ
     function renderUserNews(list) {
       const approvedList = list.filter(p => p.status === 'approved');
       const heroSection = document.getElementById('heroSection');
@@ -396,7 +471,7 @@
         return;
       }
 
-      // Bài Nổi Bật (Bài mới nhất được duyệt)
+      // Bài Nổi Bật
       const heroPost = approvedList[0];
       heroSection.innerHTML = `
         <div onclick="openUserDetail(${heroPost.id})" class="bg-white rounded-2xl shadow-sm border border-amber-200/60 overflow-hidden grid grid-cols-1 md:grid-cols-12 cursor-pointer hover:shadow-md transition group">
@@ -417,7 +492,7 @@
         </div>
       `;
 
-      // Các bài viết khác
+      // Các bài còn lại
       approvedList.slice(1).forEach(post => {
         const card = document.createElement('div');
         card.className = "bg-white rounded-xl shadow-sm border border-amber-200/60 overflow-hidden hover:shadow-md transition cursor-pointer flex flex-col group";
@@ -442,7 +517,6 @@
       });
     }
 
-    // User gửi bài viết (Chờ duyệt)
     function showUserSubmitForm() {
       document.getElementById('userHomeView').classList.add('hidden');
       document.getElementById('userDetailView').classList.add('hidden');
@@ -458,15 +532,15 @@
         category: document.getElementById('userPostCategory').value,
         image: document.getElementById('userPostImage').value || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800',
         content: document.getElementById('userPostContent').value,
-        author: currentUser ? currentUser.username : 'Độc giả',
-        status: 'pending', // BÀI VIẾT TẠO BỞI USER SẼ Ở TRẠNG THÁI CHỜ DUYỆT
+        author: currentUser ? currentUser.fullname : 'Độc giả',
+        status: 'pending', // Chờ duyệt
         date: new Date().toISOString().split('T')[0]
       };
 
       posts.unshift(newPost);
-      localStorage.setItem('my_news_posts_v2', JSON.stringify(posts));
+      localStorage.setItem('my_news_posts_v3', JSON.stringify(posts));
 
-      alert('Cảm ơn bạn! Bài viết đã được gửi tới Admin và đang chờ xét duyệt.');
+      alert('Cảm ơn bạn! Bài viết đã được gửi tới Ban biên tập và đang chờ xét duyệt.');
       document.getElementById('userPostForm').reset();
       showUserHome();
     });
@@ -533,7 +607,6 @@
       }
     }
 
-    // Hiển thị danh sách bài viết kèm chức năng DUYỆT BÀI trong Bảng Admin
     function renderAdminPosts() {
       const tbody = document.getElementById('postsTableBody');
       tbody.innerHTML = '';
@@ -542,12 +615,10 @@
         const tr = document.createElement('tr');
         tr.className = "hover:bg-amber-50/50 transition";
         
-        // Badge Trạng thái
         const statusBadge = post.status === 'approved' 
           ? `<span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold">✓ Đã duyệt</span>`
           : `<span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold animate-pulse">⏳ Chờ duyệt</span>`;
 
-        // Action Buttons
         const approveBtn = post.status === 'pending'
           ? `<button onclick="approvePost(${post.id})" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-bold transition shadow-sm">Duyệt bài</button>`
           : `<button onclick="unapprovePost(${post.id})" class="px-2.5 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-xs font-semibold transition" title="Gỡ khỏi trang chủ">Ẩn bài</button>`;
@@ -572,27 +643,24 @@
       lucide.createIcons();
     }
 
-    // Admin duyệt bài viết của User
     function approvePost(id) {
       const post = posts.find(p => p.id === id);
       if (post) {
         post.status = 'approved';
-        localStorage.setItem('my_news_posts_v2', JSON.stringify(posts));
+        localStorage.setItem('my_news_posts_v3', JSON.stringify(posts));
         renderAdminPosts();
       }
     }
 
-    // Admin ẩn bài viết đã duyệt
     function unapprovePost(id) {
       const post = posts.find(p => p.id === id);
       if (post) {
         post.status = 'pending';
-        localStorage.setItem('my_news_posts_v2', JSON.stringify(posts));
+        localStorage.setItem('my_news_posts_v3', JSON.stringify(posts));
         renderAdminPosts();
       }
     }
 
-    // Admin tự viết bài (Tự động xét duyệt là Approved)
     document.getElementById('adminPostForm').addEventListener('submit', (e) => {
       e.preventDefault();
 
@@ -603,12 +671,12 @@
         image: document.getElementById('adminPostImage').value || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800',
         content: document.getElementById('adminPostContent').value,
         author: 'Biên Tập Viên',
-        status: 'approved', // Admin viết thì tự động được duyệt luôn
+        status: 'approved',
         date: new Date().toISOString().split('T')[0]
       };
 
       posts.unshift(newPost);
-      localStorage.setItem('my_news_posts_v2', JSON.stringify(posts));
+      localStorage.setItem('my_news_posts_v3', JSON.stringify(posts));
 
       document.getElementById('adminPostForm').reset();
       switchAdminTab('posts');
@@ -618,7 +686,7 @@
     function deletePost(id) {
       if (confirm('Bạn có chắc chắn muốn xóa bài viết này không?')) {
         posts = posts.filter(p => p.id !== id);
-        localStorage.setItem('my_news_posts_v2', JSON.stringify(posts));
+        localStorage.setItem('my_news_posts_v3', JSON.stringify(posts));
         renderAdminPosts();
         renderUserNews(posts);
       }
