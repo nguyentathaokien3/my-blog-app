@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trang Báo Tin Tức & Quản Trị</title>
+  <title>Trang Báo Tin Tức - Độc Giả & Quản Trị</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -14,43 +14,144 @@
     .serif-news { font-family: 'Merriweather', serif; }
   </style>
 </head>
-<body class="bg-amber-50 text-gray-800 min-h-screen">
+<body class="bg-amber-50/50 text-gray-800 min-h-screen flex flex-col">
 
-  <!-- ==================== 1. MAN HINH DANG NHAP ==================== -->
-  <div id="loginView" class="min-h-screen flex items-center justify-center bg-amber-950 px-4">
-    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
+  <!-- ================================================================= -->
+  <!-- 1. GIAO DIỆN DÀNH CHO NGUỜI DÙNG (USER VIEW)                      -->
+  <!-- ================================================================= -->
+  <div id="userLayout" class="flex-1 flex flex-col">
+    <!-- Header / Navbar User -->
+    <header class="bg-white border-b border-amber-200 sticky top-0 z-30 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+        <!-- Logo -->
+        <a href="#" onclick="showUserHome()" class="flex items-center gap-2 text-amber-950 font-bold text-2xl tracking-tight">
+          <span class="p-2 bg-amber-500 text-amber-950 rounded-lg"><i data-lucide="newspaper" class="w-6 h-6"></i></span>
+          <span>TIN<span class="text-amber-600">NGÀY</span></span>
+        </a>
+
+        <!-- Thanh Tìm Kiếm -->
+        <div class="hidden md:flex flex-1 max-w-md mx-6 relative">
+          <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Tìm kiếm tin tức..." class="w-full pl-10 pr-4 py-2 bg-amber-50/50 border border-amber-200 rounded-full focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm">
+          <i data-lucide="search" class="w-4 h-4 text-amber-700/50 absolute left-3.5 top-3"></i>
+        </div>
+
+        <!-- Nút sang trang Admin -->
+        <button onclick="openLoginModal()" class="px-4 py-2 text-xs font-semibold bg-amber-950 hover:bg-amber-900 text-amber-100 rounded-lg transition flex items-center gap-2 shadow-sm">
+          <i data-lucide="shield-check" class="w-4 h-4 text-amber-400"></i> Trang Quản Trị
+        </button>
+      </div>
+
+      <!-- Thanh Chuyên Mục -->
+      <nav class="bg-amber-950 text-amber-100 text-sm font-medium">
+        <div class="max-w-7xl mx-auto px-4 flex items-center gap-2 overflow-x-auto py-2 scrollbar-none">
+          <button onclick="filterCategory('Tất cả')" class="cat-btn px-3 py-1.5 rounded-lg hover:bg-amber-900 transition font-bold bg-amber-900 text-amber-300">Tất Cả</button>
+          <button onclick="filterCategory('Công nghệ')" class="cat-btn px-3 py-1.5 rounded-lg hover:bg-amber-900 transition">Công Nghệ</button>
+          <button onclick="filterCategory('Xã hội')" class="cat-btn px-3 py-1.5 rounded-lg hover:bg-amber-900 transition">Xã Hội</button>
+          <button onclick="filterCategory('Kinh tế')" class="cat-btn px-3 py-1.5 rounded-lg hover:bg-amber-900 transition">Kinh Tế</button>
+          <button onclick="filterCategory('Giải trí')" class="cat-btn px-3 py-1.5 rounded-lg hover:bg-amber-900 transition">Giải Trí</button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Nội dung chính trang User -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-8">
+      
+      <!-- A. Trang Chủ Người Dùng (Tin Nổi Bật + Danh Sách) -->
+      <div id="userHomeView">
+        
+        <!-- Tin Nổi Bật (Hero Article) -->
+        <section id="heroSection" class="mb-10">
+          <!-- Render tự động qua JS -->
+        </section>
+
+        <!-- Tiêu đề danh sách -->
+        <div class="flex justify-between items-center mb-6">
+          <h2 id="currentCatTitle" class="text-2xl font-bold text-amber-950 border-l-4 border-amber-500 pl-3">Tin Tức Mới Nhất</h2>
+        </div>
+
+        <!-- Grid Danh Sách Bài Viết -->
+        <div id="userNewsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Render tự động qua JS -->
+        </div>
+      </div>
+
+      <!-- B. Trang Chi Tiết Bài Viết (Xem Tin Chi Tiết) -->
+      <article id="userDetailView" class="hidden max-w-3xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-sm border border-amber-200/60">
+        <button onclick="showUserHome()" class="text-sm font-semibold text-amber-700 hover:text-amber-900 mb-6 inline-flex items-center gap-1 transition">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại danh sách tin
+        </button>
+
+        <span id="detailCategory" class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold uppercase tracking-wider block w-fit mb-3">Danh mục</span>
+        <h1 id="detailTitle" class="text-3xl md:text-4xl font-bold text-gray-900 serif-news leading-tight mb-4">Tiêu đề bài viết</h1>
+        
+        <div class="flex items-center gap-4 text-xs text-gray-500 pb-6 mb-6 border-b border-amber-100">
+          <span>Tác giả: <b class="text-gray-700">Biên Tập Viên</b></span> • 
+          <span id="detailDate">2026-10-12</span>
+        </div>
+
+        <img id="detailImage" src="" class="w-full h-80 md:h-96 object-cover rounded-xl mb-6 shadow-sm">
+        
+        <div id="detailContent" class="serif-news text-gray-700 leading-relaxed text-lg space-y-4 whitespace-pre-line">
+          Nội dung chi tiết...
+        </div>
+      </article>
+
+    </main>
+
+    <!-- Footer User -->
+    <footer class="bg-amber-950 text-amber-200/70 py-8 border-t border-amber-900 mt-auto">
+      <div class="max-w-7xl mx-auto px-4 text-center text-sm">
+        <p class="font-semibold text-amber-100">© 2026 TINNGAY.VN - Trang Tin Tức Tổng Hợp</p>
+        <p class="text-xs text-amber-400/60 mt-1">Cập nhật nhanh chóng, chính xác & cống hiến vì độc giả</p>
+      </div>
+    </footer>
+  </div>
+
+
+  <!-- ================================================================= -->
+  <!-- 2. POPUP ĐĂNG NHẬP (MODAL LOGIN)                                  -->
+  <!-- ================================================================= -->
+  <div id="loginModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-amber-950/80 backdrop-blur-sm px-4">
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md relative border border-amber-200">
+      <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
       <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center p-3 bg-amber-100 text-amber-600 rounded-full mb-3">
-          <i data-lucide="newspaper" class="w-8 h-8"></i>
+          <i data-lucide="shield-check" class="w-8 h-8"></i>
         </div>
         <h2 class="text-2xl font-bold text-gray-900">Đăng Nhập Quản Trị</h2>
-        <p class="text-sm text-gray-500 mt-1">Cổng biên tập & quản lý bài viết tin tức</p>
+        <p class="text-sm text-gray-500 mt-1">Hệ thống quản lý bài viết & nội dung</p>
       </div>
 
       <form id="loginForm" class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Tài khoản</label>
-          <input type="text" id="username" value="admin" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
+          <input type="text" id="username" value="admin" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Mật khẩu</label>
-          <input type="password" id="password" value="123456" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
+          <input type="password" id="password" value="123456" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
         </div>
-        <div id="loginError" class="text-red-500 text-sm hidden">Mật khẩu hoặc tài khoản chưa đúng!</div>
+        <div id="loginError" class="text-red-500 text-sm hidden">Tài khoản hoặc mật khẩu không chính xác!</div>
         <button type="submit" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold rounded-lg transition shadow-md">
-          Đăng Nhập Ngay
+          Vào Trang Quản Trị
         </button>
       </form>
 
       <div class="mt-6 pt-4 border-t text-center text-xs text-gray-400">
-        Mặc định: Tài khoản: <b>admin</b> | Mật khẩu: <b>123456</b>
+        Tài khoản: <b>admin</b> | Mật khẩu: <b>123456</b>
       </div>
     </div>
   </div>
 
-  <!-- ==================== 2. TRANG QUAN TRI (ADMIN) ==================== -->
-  <div id="adminView" class="hidden min-h-screen flex flex-col md:flex-row">
-    <!-- Sidebar -->
+
+  <!-- ================================================================= -->
+  <!-- 3. GIAO DIỆN QUẢN TRỊ (ADMIN VIEW)                                -->
+  <!-- ================================================================= -->
+  <div id="adminLayout" class="hidden min-h-screen flex flex-col md:flex-row bg-gray-100">
+    <!-- Sidebar Admin -->
     <aside class="w-full md:w-64 bg-amber-950 text-amber-100 p-5 flex flex-col justify-between">
       <div>
         <div class="flex items-center gap-3 text-amber-400 font-bold text-xl mb-8">
@@ -58,45 +159,40 @@
           <span>NEWS ADMIN</span>
         </div>
         <nav class="space-y-2">
-          <button onclick="switchTab('posts')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-amber-900 transition font-medium text-white">
+          <button onclick="switchAdminTab('posts')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-amber-900 transition font-medium text-white">
             <i data-lucide="file-text" class="w-5 h-5 text-amber-400"></i> Bài Viết
           </button>
-          <button onclick="switchTab('create')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-amber-900 transition font-medium">
+          <button onclick="switchAdminTab('create')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-amber-900 transition font-medium">
             <i data-lucide="pen-tool" class="w-5 h-5 text-emerald-400"></i> Viết Bài Mới
           </button>
         </nav>
       </div>
 
-      <div class="pt-6 border-t border-amber-900">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-bold text-amber-950">A</div>
-          <div>
-            <div class="text-sm font-semibold text-amber-100">Biên Tập Viên</div>
-            <div class="text-xs text-amber-400/70">admin@tinngay.vn</div>
-          </div>
-        </div>
-        <button onclick="logout()" class="w-full flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-900 hover:bg-amber-500 hover:text-amber-950 transition text-xs font-semibold">
+      <div class="pt-6 border-t border-amber-900 space-y-3">
+        <button onclick="switchToUserView()" class="w-full flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-900/60 hover:bg-amber-900 transition text-xs font-semibold text-amber-300">
+          <i data-lucide="globe" class="w-4 h-4"></i> Trang Độc Giả
+        </button>
+        <button onclick="logoutAdmin()" class="w-full flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500 text-amber-950 hover:bg-amber-600 transition text-xs font-bold">
           <i data-lucide="log-out" class="w-4 h-4"></i> Đăng Xuất
         </button>
       </div>
     </aside>
 
-    <!-- Content Area -->
+    <!-- Main Content Admin -->
     <main class="flex-1 p-6 md:p-8 overflow-y-auto">
       
-      <!-- DANH SÁCH BÀI VIẾT -->
+      <!-- Tab 1: Danh Sách Bài Viết -->
       <section id="postsTab">
         <div class="flex justify-between items-center mb-6">
           <div>
             <h1 class="text-2xl font-bold text-gray-900">Quản Lý Bài Viết</h1>
-            <p class="text-sm text-gray-500">Danh sách tin tức đã đăng lên hệ thống</p>
+            <p class="text-sm text-gray-500">Danh sách tin tức hiện có trên hệ thống</p>
           </div>
-          <button onclick="switchTab('create')" class="bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition shadow">
+          <button onclick="switchAdminTab('create')" class="bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition shadow">
             <i data-lucide="plus" class="w-4 h-4"></i> Tạo Bài Viết
           </button>
         </div>
 
-        <!-- Bảng danh sách -->
         <div class="bg-white rounded-xl shadow-sm border border-amber-200/60 overflow-hidden">
           <table class="w-full text-left border-collapse">
             <thead class="bg-amber-100/50 border-b border-amber-200/60 text-xs text-amber-900 uppercase font-semibold">
@@ -108,23 +204,23 @@
               </tr>
             </thead>
             <tbody id="postsTableBody" class="divide-y divide-amber-100 text-sm">
-              <!-- JS render ở đây -->
+              <!-- Render qua JS -->
             </tbody>
           </table>
         </div>
       </section>
 
-      <!-- TẠO / SỬA BÀI VIẾT -->
+      <!-- Tab 2: Tạo Bài Viết Mới -->
       <section id="createTab" class="hidden max-w-3xl mx-auto">
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl font-bold text-gray-900">Soạn Thảo Bài Viết</h1>
-          <button onclick="switchTab('posts')" class="text-sm text-gray-500 hover:underline"> Quay lại</button>
+          <h1 class="text-2xl font-bold text-gray-900">Soạn Thảo Bài Viết Mới</h1>
+          <button onclick="switchAdminTab('posts')" class="text-sm text-gray-500 hover:underline">Quay lại</button>
         </div>
 
         <form id="postForm" class="bg-white p-6 rounded-xl shadow-sm border border-amber-200/60 space-y-4">
           <div>
             <label class="block text-sm font-medium mb-1">Tiêu đề bài viết *</label>
-            <input type="text" id="postTitle" required placeholder="Nhập tiêu đề hấp dẫn..." class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
+            <input type="text" id="postTitle" required placeholder="Nhập tiêu đề tin tức..." class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
           </div>
 
           <div class="grid grid-cols-2 gap-4">
@@ -149,7 +245,7 @@
           </div>
 
           <div class="flex justify-end gap-3 pt-4 border-t">
-            <button type="button" onclick="switchTab('posts')" class="px-5 py-2 border rounded-lg hover:bg-gray-50">Hủy</button>
+            <button type="button" onclick="switchAdminTab('posts')" class="px-5 py-2 border rounded-lg hover:bg-gray-50">Hủy</button>
             <button type="submit" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold rounded-lg shadow">Đăng Bài Viết</button>
           </div>
         </form>
@@ -158,53 +254,197 @@
     </main>
   </div>
 
-  <!-- JavaScript Xử Lý Toàn Bộ Chức Năng -->
+
+  <!-- ================================================================= -->
+  <!-- 4. JAVASCRIPT XỬ LÝ TOÀN BỘ HỆ THỐNG                              -->
+  <!-- ================================================================= -->
   <script>
-    // 1. Dữ liệu bài viết mẫu
+    // 1. Kho Dữ Liệu Ban Đầu
     let posts = JSON.parse(localStorage.getItem('my_news_posts')) || [
-      { id: 1, title: 'Trí Tuệ Nhân Tạo AI Đang Thay Đổi Thế Giới Như Thế Nào?', category: 'Công nghệ', date: '2026-10-10', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500', content: 'Công nghệ AI đang phát triển với tốc độ chóng mặt...' },
-      { id: 2, title: 'Xu Hướng Du Lịch Trải Nghiệm Mới Của Giới Trẻ năm 2026', category: 'Xã hội', date: '2026-10-09', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500', content: 'Du lịch xanh và khám phá thiên nhiên đang được yêu thích...' }
+      { id: 1, title: 'Trí Tuệ Nhân Tạo AI Đang Thay Đổi Thế Giới Như Thế Nào?', category: 'Công nghệ', date: '2026-10-10', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800', content: 'Công nghệ AI đang phát triển với tốc độ chóng mặt và thâm nhập sâu rộng vào hầu hết các lĩnh vực đời sống, từ y tế, giáo dục cho đến quản trị doanh nghiệp...\n\nSự bùng nổ của các mô hình ngôn ngữ lớn đã hỗ trợ hàng triệu người tối ưu công việc hàng ngày.' },
+      { id: 2, title: 'Xu Hướng Du Lịch Trải Nghiệm Mới Của Giới Trẻ Năm 2026', category: 'Xã hội', date: '2026-10-09', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800', content: 'Du lịch xanh và khám phá thiên nhiên hoang sơ đang trở thành xu hướng hàng đầu đối với giới trẻ năm 2026. Thay vì chọn các khu nghỉ dưỡng sang trọng, nhiều người chọn cắm trại và hòa mình vào môi trường sống xanh.' },
+      { id: 3, title: 'Thị Trường Tài Chính Toàn Cầu Có Những Bước Biến Động Mới', category: 'Kinh tế', date: '2026-10-08', image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800', content: 'Các chỉ số tài chính thế giới đang ghi nhận sự phục hồi mạnh mẽ trong quý này. Các nhà đầu tư tỏ ra lạc quan với xu hướng lãi suất ổn định và tăng trưởng công nghệ.' },
+      { id: 4, title: 'Bắn Tuyết Nghệ Thuật - Lễ Hội Âm Nhạc Được Chờ Đón Nhất', category: 'Giải trí', date: '2026-10-05', image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800', content: 'Sự kiện âm nhạc hoành tráng thu hút hàng nghìn khán giả trẻ tham dự với sự góp mặt của hàng loạt ngôi sao đình đám.' }
     ];
 
-    // Khởi tạo icon
-    lucide.createIcons();
+    let isAdminLoggedIn = false;
 
-    // 2. Xử lý Đăng Nhập
+    // Khởi tạo Icon Lucide & Tải dữ liệu ban đầu
+    lucide.createIcons();
+    renderUserNews(posts);
+
+    // ================= CHỨC NĂNG TRANG ĐỘC GIẢ (USER) =================
+
+    // Hiển thị Tin tức ra Trang Độc Giả
+    function renderUserNews(list) {
+      const heroSection = document.getElementById('heroSection');
+      const grid = document.getElementById('userNewsGrid');
+
+      heroSection.innerHTML = '';
+      grid.innerHTML = '';
+
+      if (list.length === 0) {
+        grid.innerHTML = `<p class="col-span-full text-center text-gray-500 py-12">Không tìm thấy bài viết nào phù hợp.</p>`;
+        return;
+      }
+
+      // Render Bài Nổi Bật (Bài viết mới nhất)
+      const heroPost = list[0];
+      heroSection.innerHTML = `
+        <div onclick="openUserDetail(${heroPost.id})" class="bg-white rounded-2xl shadow-sm border border-amber-200/60 overflow-hidden grid grid-cols-1 md:grid-cols-12 cursor-pointer hover:shadow-md transition group">
+          <div class="md:col-span-7 overflow-hidden">
+            <img src="${heroPost.image}" class="w-full h-64 md:h-96 object-cover group-hover:scale-105 transition duration-500">
+          </div>
+          <div class="md:col-span-5 p-6 md:p-8 flex flex-col justify-between">
+            <div>
+              <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold uppercase tracking-wider">${heroPost.category}</span>
+              <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mt-3 group-hover:text-amber-600 transition serif-news leading-snug">${heroPost.title}</h1>
+              <p class="text-gray-600 text-sm mt-3 line-clamp-3 leading-relaxed">${heroPost.content}</p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-amber-100 text-xs text-gray-400 flex justify-between items-center">
+              <span>Đăng ngày: ${heroPost.date}</span>
+              <span class="text-amber-600 font-bold group-hover:translate-x-1 transition flex items-center gap-1">Đọc bài gốc →</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Render Các Bài Viết Còn Lại Trong Grid
+      list.slice(1).forEach(post => {
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-xl shadow-sm border border-amber-200/60 overflow-hidden hover:shadow-md transition cursor-pointer flex flex-col group";
+        card.onclick = () => openUserDetail(post.id);
+        card.innerHTML = `
+          <div class="overflow-hidden">
+            <img src="${post.image}" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+            <div>
+              <span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold">${post.category}</span>
+              <h3 class="text-lg font-bold text-gray-900 mt-2 line-clamp-2 group-hover:text-amber-600 transition serif-news">${post.title}</h3>
+              <p class="text-sm text-gray-600 mt-2 line-clamp-2">${post.content}</p>
+            </div>
+            <div class="text-xs text-gray-400 pt-3 border-t border-amber-50 flex justify-between">
+              <span>${post.date}</span>
+              <span class="text-amber-600 font-semibold">Chi tiết →</span>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Xem Chi Tiết Bài Viết
+    function openUserDetail(id) {
+      const post = posts.find(p => p.id === id);
+      if (!post) return;
+
+      document.getElementById('detailTitle').innerText = post.title;
+      document.getElementById('detailCategory').innerText = post.category;
+      document.getElementById('detailDate').innerText = post.date;
+      document.getElementById('detailImage').src = post.image;
+      document.getElementById('detailContent').innerText = post.content;
+
+      document.getElementById('userHomeView').classList.add('hidden');
+      document.getElementById('userDetailView').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Quay lại Trang Chủ Độc Giả
+    function showUserHome() {
+      document.getElementById('userDetailView').classList.add('hidden');
+      document.getElementById('userHomeView').classList.remove('hidden');
+    }
+
+    // Lọc theo Chuyên mục
+    function filterCategory(categoryName) {
+      showUserHome();
+      document.getElementById('currentCatTitle').innerText = categoryName === 'Tất cả' ? 'Tin Tức Mới Nhất' : `Chuyên Mục: ${categoryName}`;
+      
+      if (categoryName === 'Tất cả') {
+        renderUserNews(posts);
+      } else {
+        const filtered = posts.filter(p => p.category === categoryName);
+        renderUserNews(filtered);
+      }
+    }
+
+    // Tìm kiếm Bài viết
+    function handleSearch() {
+      showUserHome();
+      const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+      const results = posts.filter(p => p.title.toLowerCase().includes(keyword) || p.content.toLowerCase().includes(keyword));
+      renderUserNews(results);
+    }
+
+
+    // ================= CHỨC NĂNG MODAL & ĐĂNG NHẬP =================
+
+    function openLoginModal() {
+      if (isAdminLoggedIn) {
+        switchToAdminView();
+      } else {
+        document.getElementById('loginModal').classList.remove('hidden');
+      }
+    }
+
+    function closeLoginModal() {
+      document.getElementById('loginModal').classList.add('hidden');
+      document.getElementById('loginError').classList.add('hidden');
+    }
+
+    // Submit Form Đăng Nhập
     document.getElementById('loginForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const u = document.getElementById('username').value;
       const p = document.getElementById('password').value;
 
-      if(u === 'admin' && p === '123456') {
-        document.getElementById('loginView').classList.add('hidden');
-        document.getElementById('adminView').classList.remove('hidden');
-        renderPosts();
+      if (u === 'admin' && p === '123456') {
+        isAdminLoggedIn = true;
+        closeLoginModal();
+        switchToAdminView();
       } else {
         document.getElementById('loginError').classList.remove('hidden');
       }
     });
 
-    // 3. Đăng xuất
-    function logout() {
-      document.getElementById('adminView').classList.add('hidden');
-      document.getElementById('loginView').classList.remove('hidden');
+
+    // ================= CHUYỂN ĐỔI GIAO DIỆN ADMIN <-> USER =================
+
+    function switchToAdminView() {
+      document.getElementById('userLayout').classList.add('hidden');
+      document.getElementById('adminLayout').classList.remove('hidden');
+      renderAdminPosts();
     }
 
-    // 4. Chuyển Tab (Bài viết / Tạo mới)
-    function switchTab(tabName) {
+    function switchToUserView() {
+      document.getElementById('adminLayout').classList.add('hidden');
+      document.getElementById('userLayout').classList.remove('hidden');
+      renderUserNews(posts);
+    }
+
+    function logoutAdmin() {
+      isAdminLoggedIn = false;
+      switchToUserView();
+    }
+
+
+    // ================= CHỨC NĂNG QUẢN TRỊ (ADMIN) =================
+
+    function switchAdminTab(tabName) {
       document.getElementById('postsTab').classList.add('hidden');
       document.getElementById('createTab').classList.add('hidden');
 
-      if(tabName === 'posts') {
+      if (tabName === 'posts') {
         document.getElementById('postsTab').classList.remove('hidden');
-        renderPosts();
+        renderAdminPosts();
       } else {
         document.getElementById('createTab').classList.remove('hidden');
       }
     }
 
-    // 5. Hiển thị danh sách bài viết ra bảng
-    function renderPosts() {
+    // Hiển thị danh sách bài viết trong Bảng Admin
+    function renderAdminPosts() {
       const tbody = document.getElementById('postsTableBody');
       tbody.innerHTML = '';
 
@@ -214,12 +454,14 @@
         tr.innerHTML = `
           <td class="p-4 font-semibold text-gray-900 flex items-center gap-3">
             <img src="${post.image}" class="w-12 h-12 rounded object-cover">
-            <span>${post.title}</span>
+            <span class="line-clamp-1">${post.title}</span>
           </td>
           <td class="p-4"><span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-semibold">${post.category}</span></td>
           <td class="p-4 text-gray-500 text-xs">${post.date}</td>
           <td class="p-4 text-right space-x-2">
-            <button onclick="deletePost(${post.id})" class="p-1.5 text-gray-400 hover:text-red-600 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            <button onclick="deletePost(${post.id})" class="p-1.5 text-gray-400 hover:text-red-600 transition" title="Xóa bài viết">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -227,35 +469,34 @@
       lucide.createIcons();
     }
 
-    // 6. Xử lý Thêm Bài Viết Mới
+    // Đăng bài viết mới từ Admin
     document.getElementById('postForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      
+
       const newPost = {
         id: Date.now(),
         title: document.getElementById('postTitle').value,
         category: document.getElementById('postCategory').value,
-        image: document.getElementById('postImage').value || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=500',
+        image: document.getElementById('postImage').value || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800',
         content: document.getElementById('postContent').value,
         date: new Date().toISOString().split('T')[0]
       };
 
-      posts.unshift(newPost); // Thêm vào đầu danh sách
-      localStorage.setItem('my_news_posts', JSON.stringify(posts)); // Lưu vào trình duyệt
-      
-      // Xóa dữ liệu trong form
+      posts.unshift(newPost); // Đưa bài mới nhất lên đầu
+      localStorage.setItem('my_news_posts', JSON.stringify(posts)); // Lưu vào bộ nhớ trình duyệt
+
       document.getElementById('postForm').reset();
-      
-      // Chuyển về trang danh sách
-      switchTab('posts');
+      switchAdminTab('posts');
+      renderUserNews(posts);
     });
 
-    // 7. Xử lý Xóa Bài Viết
+    // Xóa bài viết
     function deletePost(id) {
-      if(confirm('Bạn có chắc muốn xóa bài viết này không?')) {
+      if (confirm('Bạn có chắc muốn xóa bài viết này không?')) {
         posts = posts.filter(p => p.id !== id);
         localStorage.setItem('my_news_posts', JSON.stringify(posts));
-        renderPosts();
+        renderAdminPosts();
+        renderUserNews(posts);
       }
     }
   </script>
